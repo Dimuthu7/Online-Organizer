@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Online Organizer</title>
+  <link rel="stylesheet" href="app.css">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous" />
+  <link rel="stylesheet"
+        href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.12/angular-material.min.css" />
+
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Allerta+Stencil">
+
+</head>
+
+<body ng-app="OnlineOrganizer" ng-controller="MainController">
+
+<div class="container-fluid">
+  <!--Header-->
+  <div class="row" id="header">
+    <div class="col-md-12 m-0 p-0">
+      <div class="jumbotron">
+        <h1 class="text-center">Online Organizer</h1>
+      </div>
+    </div>
+  </div>
+
+<!--Body-->
+  <div class="row m-5">
+    <div class="col-md-5">
+      <h5 class="text-center"><span class="badge badge-danger p-2">
+        <span ng-if="expireDate === 0">Next Event :   No event!</span>
+        <span ng-if="expireDate !== 0">Next Event :   {{nextEventDetails}} <br><br>
+          Remaining : {{rDays}} : {{rHours}} : {{rMinutes}} : {{rSeconds}}
+
+        </span>
+
+      </span></h5>
+      <md-content layout="column" layout-gt-sm="row" layout-padding="" ng-cloak="" class="datepickerdemoCalendar"
+                  layout-align="center center">
+        <div layout="column">
+          <md-calendar ng-model="selectDate" ng-change="onChangeDate()"></md-calendar>
+        </div>
+      </md-content>
+    </div>
+
+
+    <div class="col-md-7" >
+
+      <div class="row">
+        <div class="col-md-12" style="border-style: groove; border-radius: 10px;">
+          <h2 class="text-center">Add New Event</h2>
+          <form class="mt-2">
+            <div class="form-row">
+              <div class="form-group col-md-12">
+                <label for="eventName">Event Name</label>
+                <input type="text" class="form-control form-control-sm" id="eventName" placeholder="Event Name"
+                       ng-model="eventName" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="date">Select Date</label>
+                <input type="text" class="form-control form-control-sm" id="date" value="{{selectDate | date:shortDate}}"
+                       disabled />
+              </div>
+              <div class="form-group col-md-6">
+                <label for="time">Select Time</label>
+                <input type="time" class="form-control form-control-sm" id="time" placeholder="Select Time"
+                       ng-model="eventTime" />
+              </div>
+            </div>
+            <div class="form-row">
+              <span class="text-danger" ng-if="validation != ''">{{validation}}</span>
+            </div>
+            <button ng-if="!editMode" type="button" class="btn btn-outline-primary btn-md btn-block mt-2" ng-click="addEvent()" >Add New Event</button>
+            <button ng-if="editMode" type="button" class="btn btn-outline-success btn-md btn-block mt-2" ng-click="addEvent()" >Edit Event</button>
+
+          </form>
+          <br/>
+        </div>
+      </div><!--row-->
+
+      <div class="row">
+        <div class="col-md-12">
+
+          <div class="row m-5">
+            <div class="col-md-12">
+              <div class="card">
+                <div class="card-header">
+                  <h3 class="card-title text-center">{{selectDate | date:shortDate}}</h3>
+                </div>
+                <ul class="list-group list-group-flush" ng-if="selectList == null || selectList == ''">
+                  <li class="list-group-item">
+                    <span>No events!</span>
+                  </li>
+                </ul>
+
+                <ul class="list-group list-group-flush" ng-repeat="event in selectList">
+                  <li class="list-group-item">
+                    {{event.eventTime}} | {{event.eventName}}
+                    <span class="text-danger float-right ml-2" ng-click="deleteEvent(event.eventId)"><i
+                            class="fas fa-trash"></i></span>
+                    <span class="text-success float-right" ng-click="editEvent(event.eventId)"><i
+                            class="fas fa-edit"></i></span>
+
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div><!--row-->
+
+    </div><!--col-md-8-->
+
+  </div><!--Body-->
+
+
+
+
+
+</div><!--container-fluid-->
+
+
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+
+<!-- Angular Material requires Angular.js Libraries -->
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.6/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.6/angular-animate.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.6/angular-aria.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.6/angular-messages.min.js"></script>
+
+<!-- fontawesome-->
+<script src="https://kit.fontawesome.com/33cd24ebe2.js" crossorigin="anonymous"></script>
+
+<!-- Angular Material Library -->
+<script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.12/angular-material.min.js"></script>
+
+<script src="app.js"></script>
+<script src="Controllers/MainController.js"></script>
+</body>
+</html>
